@@ -1,4 +1,4 @@
-package com.app.ecom;
+package com.app.ecom.controller;
 
 import java.util.List;
 
@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.app.ecom.model.User;
+import com.app.ecom.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
