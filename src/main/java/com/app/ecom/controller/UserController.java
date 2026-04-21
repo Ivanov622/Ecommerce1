@@ -2,7 +2,7 @@ package com.app.ecom.controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.ecom.model.User;
 import com.app.ecom.service.UserService;
+import com.app.ecom.dto.UserRequest;
+import com.app.ecom.dto.UserResponse;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,12 +28,12 @@ public class UserController {
 	private final UserService userService;
 	
 	@GetMapping()
-	public ResponseEntity<List<User>> getAllUsers(){
-		return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatusCode.valueOf(200));
+	public ResponseEntity<List<UserResponse>> getAllUsers(){
+		return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<User> findUserById(@PathVariable("id") Long id){
+	public ResponseEntity<UserResponse> findUserById(@PathVariable("id") Long id){
 		
 		return userService.fetchUser(id)
 				.map(ResponseEntity::ok)
@@ -39,16 +41,16 @@ public class UserController {
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<String> createUser(@RequestBody User user){
-		userService.addUser(user);
+	public ResponseEntity<String> createUser(@RequestBody UserRequest userRequest){
+		userService.addUser(userRequest);
 		return ResponseEntity.ok("User added successfully");
 		//return userService.addUser(user);
 	}
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<String> updateUser(@PathVariable("id") Long id,
-											@RequestBody User userUpdated){
-		boolean isUpdated = userService.updateUser(id, userUpdated);
+											@RequestBody UserRequest updatedUserRequest){
+		boolean isUpdated = userService.updateUser(id, updatedUserRequest);
 		if(isUpdated)
 			return ResponseEntity.ok("User updated successfully");
 		return ResponseEntity.notFound().build();
