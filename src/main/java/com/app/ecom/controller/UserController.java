@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.ecom.model.User;
 import com.app.ecom.service.UserService;
 import com.app.ecom.dto.UserRequest;
 import com.app.ecom.dto.UserResponse;
