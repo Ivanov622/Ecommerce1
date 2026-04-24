@@ -2,22 +2,31 @@ package com.app.ecom.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
-public class CartItem {
+@Table(name = "orders")
+public class Order {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,16 +35,20 @@ public class CartItem {
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	private BigDecimal totalAmount;
 	
-	@ManyToOne
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
-	private Integer quantity;
-	private BigDecimal price;
+	@Enumerated(EnumType.STRING)
+	private OrderStatus orderStatus = OrderStatus.PENDING;
+	
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<OrderItem> orderItem = new ArrayList<>();
+	
 	@CreationTimestamp
-	private LocalDateTime createdAt;
+	private LocalDateTime cretedAt;
+	
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
+	
 	
 
 }
