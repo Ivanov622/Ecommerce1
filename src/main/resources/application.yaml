@@ -12,3 +12,26 @@ spring:
       ddl-auto: create
 server:
   port: '8081'
+  shutdown: graceful
+
+# ver todos lo enpoints de actuator, acá como ejemplo, pero no sedeben habilitar todos innecesariamente:  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      access: unrestricted  # no se usa en produccion
+  info:
+    env:
+      enabled: true      
+      
+info:
+  app:
+    name: MyNewApp
+    description: App built by us
+        
+  
