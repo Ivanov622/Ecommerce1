@@ -1,0 +1,62 @@
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:15
+    environment:
+#      container    
+      POSTGRES_USER: embarkx
+      POSTGRES_PASSWORD: embarkx
+      POSTGRES_DB: ecommerce1 
+
+#     Localpc
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: 1234
+      
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+    healthcheck:                                          # ← mismo nivel que "ports"
+      test: ["CMD-SHELL", "pg_isready -U embarkx -d ecommerce1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"  
+    networks:
+      - postgres
+    restart: unless-stopped    
+  app:                                      # ← servicio nuevo
+    container_name: ecommerce1_container
+    image: ivancho622/ecommerce1            # ← tu imagen construida
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - postgres                            # ← misma red que postgres
+    depends_on:
+      postgres:
+        condition: service_healthy          # ← espera que postgres esté listo
+    restart: unless-stopped  
+        
+networks:
+  postgres:
+    driver: bridge
+volumes:
+  postgres:
+  pgadmin:      
